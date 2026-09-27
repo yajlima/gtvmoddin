@@ -15,16 +15,19 @@ MAX_UPLOAD = 1 << 20  # 1 MiB of usernames is plenty
 
 HELP = """\
 <b>username bot</b>
-Tap a listing when it sells and I'll send you a random username from it.
+When a listing sells, /get it and I'll send you a random username from it
+(and delete that name from the list).
 
-/menu - listing buttons
+/get <i>name</i> - grab a username, e.g. /get english
+/menu - buttons for every listing
 /stock - how many names are left
 /new <i>name</i> - make a listing, then send names or a .txt
 /add <i>name</i> - add names to a listing (paste them or send a .txt)
 /delete <i>name</i> - delete a listing
 /cancel - stop adding names
 
-You can also send a .txt with the listing name as the caption."""
+Quickest way to make or restock a listing: send a .txt with the listing
+name as the caption. A new name makes a new listing."""
 
 
 class Bot:
@@ -136,6 +139,12 @@ class Bot:
     def _command(self, cmd: str, arg: str) -> None:
         if cmd in ("/start", "/help"):
             self.say(HELP)
+        elif cmd == "/get":
+            if not arg:
+                return self.menu()
+            slug = self._existing(arg)
+            if slug:
+                self.order(slug)
         elif cmd == "/menu":
             self.menu()
         elif cmd == "/stock":
@@ -183,13 +192,20 @@ class Bot:
     def _upload(self, msg: dict) -> None:
         doc = msg["document"]
         caption = (msg.get("caption") or "").strip()
-        slug = self._existing(caption) if caption else self.adding
-        if not slug:
-            if not caption:
-                self.say("which listing is this for? send it with the listing name as the caption, or /add <i>name</i> first")
-            return
         if not doc.get("file_name", "").lower().endswith(".txt"):
             return self.say("send a .txt file (one username per line)")
+        if caption:
+            try:
+                slug = slugify(caption)
+            except StockError as e:
+                return self.say(html.escape(str(e)))
+            if slug not in self.stock.listings():
+                self.stock.create(slug)
+                self.say(f"✅ made new listing <b>{slug}</b>. get names from it with /get {slug}")
+        elif self.adding:
+            slug = self.adding
+        else:
+            return self.say("which listing is this for? send the .txt again with the listing name as the caption")
         data = self.tg.download(doc["file_id"], MAX_UPLOAD)
         self._add(slug, data.decode("utf-8", errors="replace"))
 

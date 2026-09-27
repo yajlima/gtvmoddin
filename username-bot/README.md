@@ -1,9 +1,9 @@
 # username-bot
 
-A Telegram bot for selling usernames. Each listing is a `.txt` file of names. When an order comes in, tap that listing's button and the bot hands you a **random** name from it, as its own message so it's easy to copy. The name comes out of the file so you never sell the same one twice.
+A Telegram bot for selling usernames. Each listing is a `.txt` file of names. When an order comes in, send `/get english` (or tap the listing's button) and the bot hands you a **random** name from that listing, as its own message so it's easy to copy. The name is deleted from the `.txt`, so you never sell the same one twice.
 
 ```
-you:  [📦 english (12)]            ← tap the listing that sold
+you:  /get english
 bot:  🛒 english sold · 11 left    [↩️ undo]
 bot:  Notch                         ← tap to copy, paste into the order chat
 ```
@@ -19,14 +19,15 @@ bot:  Notch                         ← tap to copy, paste into the order chat
 
 | Command | What it does |
 |---|---|
-| `/menu` | A button for each listing, with names left |
+| `/get english` | Grab a random name from `english` and delete it from the list |
+| `/menu` | A button for each listing, with names left (tapping one = `/get`) |
 | `/stock` | Names left per listing |
 | `/new english` | Make a listing, then paste names (one per line) or send a `.txt` |
 | `/add english` | Add names to a listing: paste them or send a `.txt` |
 | `/cancel` | Stop adding names |
 | `/delete english` | Delete a listing (asks first; the sold log is kept) |
 
-Shortcut: send a `.txt` with the listing name as the caption to add it straight to that listing. Duplicates are skipped, and names you've sold before are flagged.
+**Quickest way to make or restock a listing:** send the `.txt` with the listing name as the caption. A new name creates the listing, and an existing one gets the names added. Duplicates are skipped, and names you've sold before are flagged.
 
 ## Setup
 
@@ -38,7 +39,7 @@ Shortcut: send a `.txt` with the listing name as the caption to add it straight 
    export TELEGRAM_BOT_TOKEN=123456:ABC... TELEGRAM_CHAT_ID=987654321 STOCK_DIR=~/username-stock
    username-bot
    ```
-   You'll get "🟢 bot online". Send `/new english` and paste your names.
+   You'll get "🟢 bot online". Send your `english.txt` with the caption `english`, then `/get english`.
 
 Already have `.txt` files? Drop them into `STOCK_DIR` (for example `english.txt`, `random.txt`, `nonumbers.txt`). The filename is the listing name.
 
@@ -78,7 +79,7 @@ When the bot starts, it ignores taps you sent while it was off, so a stale tap c
 
 ## Hooking up automation later
 
-`username-bot order english` does exactly what tapping the button does: it picks a name and sends it to your Telegram. Any script can call it, for example an Eldorado Seller API watcher that runs it when a new order comes in. It's safe to run while the bot is running, because file access is locked.
+`username-bot order english` does exactly what `/get english` does: it picks a name and sends it to your Telegram. Any script can call it, for example an Eldorado Seller API watcher that runs it when a new order comes in. It's safe to run while the bot is running, because file access is locked.
 
 `username-bot stock` prints the counts, which you can use for restock scripts.
 

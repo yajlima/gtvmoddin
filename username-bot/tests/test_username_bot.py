@@ -233,3 +233,34 @@ def test_order_cli(tg, tmp_path):
     out = run("order", "nonum")
     assert out.returncode == 1 and "out of stock" in out.stderr
     assert run("stock").stdout == "nonum\t0\n"
+
+
+def test_get_command(tg, bot):
+    bot.stock.create("random")
+    bot.stock.add("random", "q7x2\nz9k4")
+    bot.handle(text("/get random"))
+    assert "random</b> sold · 1 left" in tg.sent[0]["text"]
+    got = tg.sent[1]["text"]
+    assert got in ("<code>q7x2</code>", "<code>z9k4</code>")
+    left = (Path(bot.stock.dir) / "random.txt").read_text().split()
+    assert len(left) == 1 and f"<code>{left[0]}</code>" != got  # picked name deleted from the txt
+
+    bot.handle(text("/get Random"))  # case doesn't matter
+    bot.handle(text("/get random"))
+    assert "out of stock" in tg.texts()[-1]
+    bot.handle(text("/get nope"))
+    assert "no listing called <b>nope</b>" in tg.texts()[-1]
+    bot.handle(text("/get"))  # no name: show the buttons
+    assert tg.sent[-1]["reply_markup"]["inline_keyboard"][0][0]["callback_data"] == "pick:random"
+
+
+def test_txt_with_new_name_creates_listing(tg, bot):
+    tg.files["f9"] = b"aaa\nbbb\n"
+    bot.handle({"message": {"chat": {"id": ME}, "caption": "No Numbers",
+                            "document": {"file_id": "f9", "file_name": "nonum.txt"}}})
+    assert "made new listing <b>no-numbers</b>" in tg.texts()[-2]
+    assert "added 2 to <b>no-numbers</b>" in tg.texts()[-1]
+    assert bot.stock.listings() == {"no-numbers": 2}
+    bot.handle({"message": {"chat": {"id": ME}, "caption": "!!!",
+                            "document": {"file_id": "f9", "file_name": "x.txt"}}})
+    assert "bad listing name" in tg.texts()[-1]
