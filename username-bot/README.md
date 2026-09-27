@@ -29,7 +29,28 @@ bot:  Notch                         ← tap to copy, paste into the order chat
 
 **Quickest way to make or restock a listing:** send the `.txt` with the listing name as the caption. A new name creates the listing, and an existing one gets the names added. Duplicates are skipped, and names you've sold before are flagged.
 
-## Setup
+## Install on the homelab (one command)
+
+Copy the `username-bot` folder to the homelab (or `git clone` the repo), then:
+
+```bash
+cd username-bot
+./install.sh
+```
+
+The installer:
+
+1. Checks you have Python 3.10+ and installs the bot into its own virtualenv.
+2. Asks for your bot token and tests it.
+3. Finds your chat id for you: you message the bot once and press Enter.
+4. Saves the config to `~/.config/username-bot.env`, readable only by you.
+5. Sets it up as a systemd service, so it starts on boot and restarts if it crashes.
+
+To update, run `git pull && ./install.sh` again (it keeps your config). To remove it, run `./install.sh --uninstall`, which keeps your stock and config.
+
+It works on any Linux with systemd (Ubuntu, Debian, Proxmox LXCs, and so on). It needs `python3` and `python3-venv`; on Debian/Ubuntu, install them with `sudo apt install python3 python3-venv`.
+
+## Manual setup
 
 1. **Make a bot** with [@BotFather](https://t.me/BotFather) (`/newbot`) and copy the token. Use a different bot from notify-mcp: only one program can read a bot's messages at a time.
 2. **Get your chat id.** Message your new bot once, then open `https://api.telegram.org/bot<TOKEN>/getUpdates` and look for `"chat":{"id":...}`. Or use `notify-mcp setup` with this bot's token.

@@ -225,7 +225,7 @@ class Bot:
         # Drop anything queued while the bot was off so an old tap can't pick a name.
         backlog = self.tg.call("getUpdates", offset=-1, timeout=0)
         offset = backlog[-1]["update_id"] + 1 if backlog else None
-        self.say("🟢 bot online. /menu for listings" + (" (ignored taps sent while I was off)" if backlog else ""))
+        self.say("🟢 bot online. /get <i>name</i> when something sells, /help for more" + (" (ignored taps sent while I was off)" if backlog else ""))
         while True:
             try:
                 for up in self.tg.updates(offset):
