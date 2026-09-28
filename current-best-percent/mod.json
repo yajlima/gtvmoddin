@@ -1,0 +1,20 @@
+{
+	"geode": "5.10.1",
+	"gd": {
+		"win": "2.2081"
+	},
+	"id": "yajlima.current-best-percent",
+	"name": "Current / Best Percent",
+	"version": "v1.0.0",
+	"developer": "yajlima",
+	"description": "Shows current% / best% in the in-game percentage label.",
+	"tags": ["gameplay", "interface"],
+	"settings": {
+		"enabled": {
+			"type": "bool",
+			"name": "Enabled",
+			"description": "Replace the in-game percentage with <cy>current% / best%</c>. Turn off to get the vanilla percentage back.",
+			"default": true
+		}
+	}
+}
