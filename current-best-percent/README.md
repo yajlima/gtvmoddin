@@ -49,7 +49,12 @@ version (the major.minor has to match the installed SDK).
 
 ## Install
 
-Copy `yajlima.current-best-percent.geode` into
+Easiest: put `install_mod.py` (from `dist/`) next to the `.geode` file and run
+`python install_mod.py`. It finds your Steam copy of Geometry Dash, checks that
+Geode is installed and copies the mod in. If it can't find the game, pass
+`--gd-path "D:\path\to\Geometry Dash"`. `--uninstall` removes the mod.
+
+Or do it by hand: copy `yajlima.current-best-percent.geode` into
 `<Geometry Dash folder>\geode\mods\` (for Steam that's usually
 `C:\Program Files (x86)\Steam\steamapps\common\Geometry Dash\geode\mods\`),
 then restart the game.
