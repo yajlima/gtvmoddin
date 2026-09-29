@@ -12,13 +12,19 @@ namespace {
         return Mod::get()->getSettingValue<bool>("enabled");
     }
 
-    // Same text the game itself puts in the label: "12%", or "12.34%" when the
-    // game's decimal percentage option is on.
-    std::string formatCurrent(float percent, bool decimals) {
-        if (decimals) {
-            return fmt::format("{:.2f}%", percent);
+    int decimalPlaces() {
+        return static_cast<int>(std::clamp<int64_t>(Mod::get()->getSettingValue<int64_t>("decimals"), 0, 3));
+    }
+
+    // "7%" with 0 decimals, "7.412%" with 3. Truncates instead of rounding so it
+    // never reads 100% before the level is actually finished.
+    std::string formatPercent(float percent, int decimals) {
+        if (decimals <= 0) {
+            return fmt::format("{}%", static_cast<int>(percent));
         }
-        return fmt::format("{}%", static_cast<int>(percent));
+        auto scale = std::pow(10.0, decimals);
+        auto truncated = std::floor(static_cast<double>(percent) * scale) / scale;
+        return fmt::format("{:.{}f}%", truncated, decimals);
     }
 
     // Current run progress clamped to 0-100 (and 0 if the level has no length)
@@ -57,7 +63,7 @@ class $modify(BestPercentPlayLayer, PlayLayer) {
         }
         best = std::clamp(best, 0, 100);
 
-        auto text = fmt::format("{} / {}%", formatCurrent(percent, m_decimalPercentage), best);
+        auto text = fmt::format("{} / {}%", formatPercent(percent, decimalPlaces()), best);
         if (text != m_percentageLabel->getString()) {
             m_percentageLabel->setString(text.c_str());
         }
@@ -96,9 +102,16 @@ $on_mod(Loaded) {
         }
         if (!enabled) {
             // Put the vanilla text back right away instead of waiting for the next update
+            // (the game's own decimal option shows 2 places)
             auto percent = currentPercent(playLayer);
-            playLayer->m_percentageLabel->setString(formatCurrent(percent, playLayer->m_decimalPercentage).c_str());
+            auto vanilla = formatPercent(percent, playLayer->m_decimalPercentage ? 2 : 0);
+            playLayer->m_percentageLabel->setString(vanilla.c_str());
         }
         playLayer->updateProgressbar();
+    });
+    listenForSettingChanges<int64_t>("decimals", [](int64_t) {
+        if (auto playLayer = PlayLayer::get()) {
+            playLayer->updateProgressbar();
+        }
     });
 }

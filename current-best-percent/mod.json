@@ -5,7 +5,7 @@
 	},
 	"id": "yajlima.current-best-percent",
 	"name": "Current / Best Percent",
-	"version": "v1.0.1",
+	"version": "v1.0.2",
 	"developer": "yajlima",
 	"description": "Shows current% / best% in the in-game percentage label.",
 	"tags": ["gameplay", "interface"],
@@ -15,6 +15,14 @@
 			"name": "Enabled",
 			"description": "Replace the in-game percentage with <cy>current% / best%</c> (shown even if the game's Show Percentage option is off). Turn off to get the vanilla percentage back.",
 			"default": true
+		},
+		"decimals": {
+			"type": "int",
+			"name": "Decimal Places",
+			"description": "How many decimals the <cy>current</c> percentage shows, e.g. 3 gives <cy>7.412%</c>. The best stays a whole number because that's all the game saves.",
+			"default": 3,
+			"min": 0,
+			"max": 3
 		}
 	}
 }

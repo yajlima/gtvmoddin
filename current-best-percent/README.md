@@ -1,9 +1,10 @@
 # Current / Best Percent
 
 A Geode mod for Geometry Dash on Windows that changes the in-game percentage to
-**current% / best%**, for example `12% / 40%`.
+**current% / best%**, for example `12.345% / 40%`.
 
-- The left number updates live while you play.
+- The left number updates live while you play, with 3 decimals by default
+  (e.g. `7.412% / 40%`). The best is a whole number, since that's all the game saves.
 - The right number is your saved normal-mode best for the level.
 - When you pass your best in a normal run, the right number goes up with you,
   during that same attempt.
@@ -32,7 +33,8 @@ restart. `dist/install_mod.py` can do that copy for you.
 ## Settings
 
 Geode menu -> find **Current / Best Percent** in the installed list -> open it
--> settings button in the bottom left of its popup -> **Enabled**.
+-> settings button in the bottom left of its popup -> **Enabled** and
+**Decimal Places** (0-3).
 
 ## Build on Windows
 
