@@ -5,7 +5,7 @@
 	},
 	"id": "yajlima.current-best-percent",
 	"name": "Current / Best Percent",
-	"version": "v1.0.0",
+	"version": "v1.0.1",
 	"developer": "yajlima",
 	"description": "Shows current% / best% in the in-game percentage label.",
 	"tags": ["gameplay", "interface"],
@@ -13,7 +13,7 @@
 		"enabled": {
 			"type": "bool",
 			"name": "Enabled",
-			"description": "Replace the in-game percentage with <cy>current% / best%</c>. Turn off to get the vanilla percentage back.",
+			"description": "Replace the in-game percentage with <cy>current% / best%</c> (shown even if the game's Show Percentage option is off). Turn off to get the vanilla percentage back.",
 			"default": true
 		}
 	}

@@ -61,10 +61,21 @@ class $modify(BestPercentPlayLayer, PlayLayer) {
         if (text != m_percentageLabel->getString()) {
             m_percentageLabel->setString(text.c_str());
         }
+        // Show it even when the game's own Show Percentage option is off
+        if (!m_percentageLabel->isVisible()) {
+            m_percentageLabel->setVisible(true);
+        }
     }
 
     void updateProgressbar() {
         PlayLayer::updateProgressbar();
+        this->refreshBestLabel();
+    }
+
+    // Runs once per frame after the game's own per-frame work, so our text wins
+    // even if the game writes the label somewhere updateProgressbar isn't hooked
+    void postUpdate(float dt) {
+        PlayLayer::postUpdate(dt);
         this->refreshBestLabel();
     }
 

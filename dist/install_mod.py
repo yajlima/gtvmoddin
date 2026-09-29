@@ -11,6 +11,7 @@ checks that Geode is installed, and copies the .geode into geode\\mods.
 Options:
     --gd-path PATH      Geometry Dash folder (or GeometryDash.exe) if auto-detect misses it
     --geode-file PATH   The .geode file to install, if it isn't next to this script
+                        (Geode 4 / GD 2.2074: yajlima.current-best-percent-gd2.2074-geode4.geode)
     --uninstall         Remove the mod instead
     --no-pause          Don't wait for Enter before closing
 """
